@@ -1,5 +1,5 @@
 import { ChangeEvent, useState, useEffect } from 'react'
-import './Exercises.css'
+import styles from './Exercises.module.css';
 import {
   categoryFilter,
   equipmentFilter,
@@ -9,6 +9,8 @@ import {
 } from './filters';
 import { useSearchParams } from 'react-router-dom';
 import Paginator, {IPagination, PaginationLink} from '../../components/Paginator';
+import Table from '../../components/Table';
+import Grid from '../../components/Grid';
 
 interface SearchParam {
   [key: string]: string;
@@ -21,10 +23,17 @@ const allFilters = [
   experienceFilter,
 ]
 
+enum ViewMode {
+  TABLE = 'table',
+  GRID = 'grid'
+}
+
+
 function Exercises() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [exercises, setExercises] = useState([]);
   const [pagination, setPagination] = useState<IPagination>({links: []});
+  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.TABLE);
 
   /**
    * 
@@ -111,19 +120,36 @@ function Exercises() {
 
       <div>
         <p>Exercises</p>
-        <ul>
-          {exercises.map((exercise: any, idx) => {
-            return <li key={idx}>
-              {exercise.name}
-            </li>
-          })}
-        </ul>
+        <button onClick={() => setViewMode(ViewMode.GRID)}>GRID VIEW</button>
+        <button onClick={() => setViewMode(ViewMode.TABLE)}>TABLE VIEW</button>
+        {
+          viewMode === ViewMode.GRID ? 
+            <Grid items={exercises} template={GridItemTemplate}/> :
+            <Table items={exercises} cols={['name', ['target_muscle_group', 'target muscle'], ['exercise_type', 'type'], ['equipment_required', 'equipment'], ['experience_level', 'experience'], 'url']}/>
+        }
       </div>
 
       <Paginator links={pagination?.links as PaginationLink[]} clickFn={handlePaginatorClick} />
 
     </>
   )
+}
+
+function openExercise (e: any){
+
+}
+
+function GridItemTemplate (item: any) {
+  return (
+    <div className={styles.gridItem} onClick={openExercise}>
+      <h3>{item.name}</h3>
+      <div>{item['target_muscle_group']}</div>
+      <div>{item['exercise_type']}</div>
+      <div>{item['equipment_required']}</div>
+      <div>{item['experience_level']}</div>
+      <a href={item.url} target='_blank' className={styles.exerciseAnchor}>PLAY</a>
+    </div>
+  );
 }
 
 export default Exercises;

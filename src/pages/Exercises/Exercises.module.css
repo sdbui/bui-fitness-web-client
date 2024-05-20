@@ -1,0 +1,10 @@
+.exerciseList {
+  list-style-type: none;
+  display: grid;
+  padding: 10px;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.gridItem {
+  overflow: hidden;
+}
