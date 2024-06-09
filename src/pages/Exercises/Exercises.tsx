@@ -11,9 +11,16 @@ import { useSearchParams } from 'react-router-dom';
 import Paginator, {IPagination, PaginationLink} from '../../components/Paginator';
 import Table from '../../components/Table';
 import Grid from '../../components/Grid';
+import MultiSelect from '../../components/MultiSelect';
 
 interface SearchParam {
   [key: string]: string;
+}
+
+interface IFilter {
+  display: string;
+  key: string;
+  options: string[];
 }
 
 const allFilters = [
@@ -34,6 +41,12 @@ function Exercises() {
   const [exercises, setExercises] = useState([]);
   const [pagination, setPagination] = useState<IPagination>({links: []});
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.TABLE);
+
+
+  // get initial exercises right off the bat
+  useEffect(() => {
+    getExercises();
+  }, []);
 
   /**
    * 
@@ -64,15 +77,16 @@ function Exercises() {
     setExercises(json.data);
   }
 
-  const handleFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    let filterKey = e.target.name;
-    let filterVal = e.target.value;
+  const handleFilterChange = (key: string,checkedOptions: string[]) => {
+    debugger;
+    let filterKey = key;
+    let filterVal = checkedOptions;
 
     // instead of filters... use queryParams
     setSearchParams((oldParams:any)  => {
       let newParams = new URLSearchParams(oldParams);
-      if (filterVal) {
-        newParams.set(filterKey,filterVal);
+      if (filterVal.length) {
+        newParams.set(filterKey,filterVal.join(','));
       } else {
         newParams.delete(filterKey)
       }
@@ -102,16 +116,7 @@ function Exercises() {
 
         {allFilters.map((filter, idx) => {
           return (
-            <div className="filter-section" key={idx}>
-              <select name={filter.key} onChange={handleFilterChange} value={searchParams.get(filter.key) || ''}>
-                <option value="">-NONE-</option>
-                {filter.options.map((opt, optIdx) => {
-                  return (
-                    <option key={optIdx}>{opt}</option>
-                  )
-                })}
-              </select>
-            </div>
+            <Filter filter={filter} key={idx} handleFilterChange={handleFilterChange}/>
           )
         })}
       </div>
@@ -149,6 +154,15 @@ function GridItemTemplate (item: any) {
       <div>{item['experience_level']}</div>
       <a href={item.url} target='_blank' className={styles.exerciseAnchor}>PLAY</a>
     </div>
+  );
+}
+
+function Filter ({filter, handleFilterChange}: {filter: IFilter, handleFilterChange: Function}) {
+  return (
+    <MultiSelect name={filter.display} filterkey={filter.key}
+      options={filter.options}
+      onSelectionChange={handleFilterChange}
+    />
   );
 }
 
