@@ -1,4 +1,4 @@
-import { ChangeEvent, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import styles from './Exercises.module.css';
 import {
   categoryFilter,
@@ -37,11 +37,10 @@ enum ViewMode {
 
 
 function Exercises() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams(new URLSearchParams());
   const [exercises, setExercises] = useState([]);
   const [pagination, setPagination] = useState<IPagination>({links: []});
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.TABLE);
-
 
   // get initial exercises right off the bat
   useEffect(() => {
@@ -52,11 +51,12 @@ function Exercises() {
    * 
    * @param page Optional page number to jump to. Used by pagination
    */
-  const getExercises = async (page?: string) => {
+  const getExercises = async (page?: number) => {
     let url = `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/exercises`;
-    let params = new URLSearchParams(searchParams);
 
-    if (page) params.set('page', page)
+    let params = new URLSearchParams(searchParams);
+    
+    if (page) params.set('page', String(page))
     // append filters and maybe page number
     url += `?${params}`;
     let res = await fetch(url);
@@ -77,12 +77,10 @@ function Exercises() {
     setExercises(json.data);
   }
 
-  const handleFilterChange = (key: string,checkedOptions: string[]) => {
-    debugger;
+  const handleFilterChange = (key: string, checkedOptions: string[]) => {
     let filterKey = key;
     let filterVal = checkedOptions;
 
-    // instead of filters... use queryParams
     setSearchParams((oldParams:any)  => {
       let newParams = new URLSearchParams(oldParams);
       if (filterVal.length) {
@@ -104,19 +102,22 @@ function Exercises() {
     let qs = url.split('?')[1]; // query string
     let params = new URLSearchParams(qs);
     let page = params.get('page');
-    getExercises(page as string);
+    getExercises(Number(page));
+  }
+
+  const clearFilters = () => {
+    setSearchParams({});
   }
 
   return (
     <>
-      <h1>DEBUG: {JSON.stringify(searchParams)}</h1>
       <div>
         <h3>filters here</h3>
-        <button onClick={()=> {setSearchParams({})}}>Clear all filters</button>
+        <button onClick={clearFilters}>Clear all filters</button>
 
         {allFilters.map((filter, idx) => {
           return (
-            <Filter filter={filter} key={idx} handleFilterChange={handleFilterChange}/>
+            <Filter key={idx} filter={filter} handleFilterChange={(filterKey, vals) => { handleFilterChange(filterKey, vals)}} val={searchParams.get(filter.key)?.split(',') || []}></Filter>
           )
         })}
       </div>
@@ -130,7 +131,7 @@ function Exercises() {
         {
           viewMode === ViewMode.GRID ? 
             <Grid items={exercises} template={GridItemTemplate}/> :
-            <Table items={exercises} cols={['name', ['target_muscle_group', 'target muscle'], ['exercise_type', 'type'], ['equipment_required', 'equipment'], ['experience_level', 'experience'], 'url']}/>
+            <Table items={exercises} cols={['name', ['category', 'target muscle'],'secondary_muscles', ['exercise_type', 'type'], ['equipment_required', 'equipment'], ['experience_level', 'experience'], 'url']}/>
         }
       </div>
 
@@ -148,7 +149,7 @@ function GridItemTemplate (item: any) {
   return (
     <div className={styles.gridItem} onClick={openExercise}>
       <h3>{item.name}</h3>
-      <div>{item['target_muscle_group']}</div>
+      <div>{item['category']}</div>
       <div>{item['exercise_type']}</div>
       <div>{item['equipment_required']}</div>
       <div>{item['experience_level']}</div>
@@ -157,11 +158,13 @@ function GridItemTemplate (item: any) {
   );
 }
 
-function Filter ({filter, handleFilterChange}: {filter: IFilter, handleFilterChange: Function}) {
+function Filter ({filter, handleFilterChange, val}: {filter: IFilter, handleFilterChange: Function, val: string[]}) {
+  const [visible, setVisible] = useState(false);
   return (
     <MultiSelect name={filter.display} filterkey={filter.key}
       options={filter.options}
       onSelectionChange={handleFilterChange}
+      val={val}
     />
   );
 }

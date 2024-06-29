@@ -1,41 +1,51 @@
 import { ChangeEvent, useState, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import styles from './index.module.css';
 
 interface MultiSelectProps {
-  name: string;
-  filterkey: string;
-  options: string[];
+  name: string; // display name
+  filterkey: string; // the key of filter
+  options: string[]; 
   onSelectionChange: Function;
+  val: string[];
 }
 
-export default function MultiSelect({name, filterkey, options, onSelectionChange}: MultiSelectProps) {
-  const [selection, setSelection] = useState(new Set());
-
-  // effect will fire callback with selection array every time set changes
-  useEffect(() => {
-    onSelectionChange(filterkey, Array.from(selection));
-  }, [selection]);
+export default function MultiSelect({name, filterkey, options, onSelectionChange, val}: MultiSelectProps) {
+  const [visible, setVisible] = useState(false);
 
   const handleChange = function (e: ChangeEvent<HTMLInputElement>) {
-    setSelection(prev => {
-      let newSelection = new Set(prev);
-      if (e.target.checked) {
-        newSelection.add(e.target.name);
-      } else {
-        newSelection.delete(e.target.name);
-      }
-      return newSelection;
-    })
+    if (e.target.checked) {
+      onSelectionChange(filterkey, [...val, e.target.name])
+    } else {
+      let copy = [...val];
+      let idxToDelete = copy.findIndex(x => x === e.target.name);
+      copy.splice(idxToDelete,1 );
+      onSelectionChange(filterkey, copy);
+    }
+  }
+
+  const toggleVisibility = function () {
+    setVisible(prev => !prev);
   }
 
   return (
     <div>
-      <h1>{name}</h1>
-      <ul>
+      <div className={styles.name} onClick={toggleVisibility}>
+        <h3>{name}</h3>
+        { visible ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronUp} />}
+      </div>
+      <ul className={`${styles.list} ${visible ? '' : styles.collapsed}`}>
         {options.map((option, idx) => {
           return (
             <li key={idx}>
-              <input type="checkbox" name={option} key={idx} onChange={handleChange}></input>
-              <label htmlFor={option}>{option}</label>
+              <input type="checkbox" 
+                id={`${filterkey}-${idx}`} 
+                name={option} 
+                key={idx} 
+                onChange={handleChange}
+                checked={val.includes(option)}></input>
+              <label htmlFor={`${filterkey}-${idx}`}>{option}</label>
             </li>
           )
         })}

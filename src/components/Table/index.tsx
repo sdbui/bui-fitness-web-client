@@ -32,9 +32,16 @@ export default function ({items = [], cols = []}: TableProps) {
                     </td>
                   )
                 } else {
+                  let str = '';
+                  if (Array.isArray(item[colName])) {
+                    let names = item[colName].map(x => x.name );
+                    str = names.join(', ')
+                  } else {
+                    str = item[colName]
+                  }
                   return (
                     <td key={colIdx}>
-                      {item[colName]}
+                      {str || 'none'}
                     </td>
                   )
                 }

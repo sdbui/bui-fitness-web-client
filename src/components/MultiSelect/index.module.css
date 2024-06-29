@@ -1,0 +1,20 @@
+.name {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.name svg {
+  margin-left: 10px;
+  height: 12px;
+}
+
+.list {
+  list-style-type: none;
+  padding: 0 0 0 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+.list.collapsed {
+  display: none;
+}
