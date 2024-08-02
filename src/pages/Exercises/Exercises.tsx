@@ -13,6 +13,12 @@ import Table from '../../components/Table';
 import Grid from '../../components/Grid';
 import MultiSelect from '../../components/MultiSelect';
 
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
+
+import { useNavigate } from "react-router-dom"
+
 interface SearchParam {
   [key: string]: string;
 }
@@ -40,7 +46,8 @@ function Exercises() {
   const [searchParams, setSearchParams] = useSearchParams(new URLSearchParams());
   const [exercises, setExercises] = useState([]);
   const [pagination, setPagination] = useState<IPagination>({links: []});
-  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.TABLE);
+  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID);
+  const navigate = useNavigate();
 
   // get initial exercises right off the bat
   useEffect(() => {
@@ -112,7 +119,6 @@ function Exercises() {
   return (
     <>
       <div>
-        <h3>filters here</h3>
         <button onClick={clearFilters}>Clear all filters</button>
 
         {allFilters.map((filter, idx) => {
@@ -125,7 +131,6 @@ function Exercises() {
       <button onClick={() => getExercises()}>go fetch</button>
 
       <div>
-        <p>Exercises</p>
         <button onClick={() => setViewMode(ViewMode.GRID)}>GRID VIEW</button>
         <button onClick={() => setViewMode(ViewMode.TABLE)}>TABLE VIEW</button>
         {
@@ -141,25 +146,61 @@ function Exercises() {
   )
 }
 
-function openExercise (e: any){
+function openExercise (url: string){
+
+  window.open(url)
 
 }
 
 function GridItemTemplate (item: any) {
+
+  const difficultyColorMap = {
+    beginner: 'success',
+    intermediate: 'warning',
+    advanced: 'error'
+  };
+
   return (
-    <div className={styles.gridItem} onClick={openExercise}>
-      <h3>{item.name}</h3>
-      <div>{item['category']}</div>
-      <div>{item['exercise_type']}</div>
-      <div>{item['equipment_required']}</div>
-      <div>{item['experience_level']}</div>
-      <a href={item.url} target='_blank' className={styles.exerciseAnchor}>PLAY</a>
+    <div className={styles.gridItem} onClick={() => {openExercise(item.url)}}>
+      <div className={styles.cardImage}>
+        <img src={item.thumbnail || '/barbell.svg'}/>
+      </div>
+      <Box sx={{padding: '0 15px'}}>
+        <Box>
+          <Typography variant='h6' align='center' sx={{'text-transform': 'capitalize', 'white-space': 'nowrap', overflow: 'hidden', 'text-overflow': 'ellipsis'}}>{item.name}</Typography>
+        </Box>
+        <div className={styles.primaryMuscles}>
+          <Typography variant="caption">Targeted Muscles</Typography>
+          <Box display="flex" gap={1}>
+            <Chip label={item['category']} size="small" color="info" sx={{'text-transform': 'capitalize'}}/>
+            {item['secondary_muscles'].length === 0 ? '': (
+              item['secondary_muscles'].map(({name}: {name: string}) => {
+                return <Chip label={name} size="small" color="primary" sx={{'text-transform': 'capitalize'}}/>
+              })
+            )}
+          </Box>
+          {/* <Typography variant="subtitle1">{item['category']}</Typography> */}
+        </div>
+        <div className={styles.equipment}>
+          <Typography variant="caption">Equipment</Typography>
+          <Box>
+            <Chip size="small" label={item['equipment_required']}  sx={{'text-transform': 'capitalize'}}/>
+          </Box>
+        </div>
+        <div className={styles.difficulty}>
+          <Typography variant="caption">Difficulty</Typography>
+          <Box>
+            <Chip size="small" label={item['experience_level']} color={difficultyColorMap[item['experience_level']]} sx={{'text-transform': 'capitalize'}}/>
+          </Box>
+        </div>
+      </Box>
     </div>
   );
 }
 
 function Filter ({filter, handleFilterChange, val}: {filter: IFilter, handleFilterChange: Function, val: string[]}) {
   const [visible, setVisible] = useState(false);
+
   return (
     <MultiSelect name={filter.display} filterkey={filter.key}
       options={filter.options}

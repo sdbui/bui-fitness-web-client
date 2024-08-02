@@ -5,9 +5,25 @@ import './index.css'
 import router from './router.tsx';
 import { RouterProvider } from 'react-router-dom';
 
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AppBar />
-    <RouterProvider router={router}></RouterProvider>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <AppBar />
+      <RouterProvider router={router}></RouterProvider>
+    </ThemeProvider>
   </React.StrictMode>,
 )

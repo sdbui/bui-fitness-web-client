@@ -1,5 +1,4 @@
 /*COPY PASTED FIRST CSS RESET I FOUND https://www.joshwcomeau.com/css/custom-css-reset/*/
-
 /*
   1. Use a more-intuitive box-sizing model.
 */
@@ -46,3 +45,6 @@ p, h1, h2, h3, h4, h5, h6 {
 #root, #__next {
   isolation: isolate;
 }
+
+/* END CSS RESET */
+
