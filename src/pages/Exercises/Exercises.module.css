@@ -4,6 +4,14 @@
   background: rgb(30,30,30);
   cursor: pointer;
   padding-bottom: 15px;
+
+  background: radial-gradient(
+    circle at calc(var(--x) * 1px) calc(var(--y) * 1px),
+    /* rgba(63, 145, 161, 0.23), */
+    hsl(0 0% 100% / 0.13),
+    rgb(30,30,30) 30vmin
+  );
+  background-attachment: fixed;
 }
 
 .gridItem h3 {
@@ -23,11 +31,11 @@
 }
 
 .gridItem:hover {
-  box-shadow: 0px 0px 3px 3px rgb(63, 145, 161);
+  box-shadow: 0px 0px 5px 3px rgb(84, 193, 214);
 }
 .gridItem:hover .cardImage img {
   transform-origin: center;
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .sidebar {

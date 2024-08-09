@@ -5,22 +5,21 @@ import {
   equipmentFilter,
   exerciseTypeFilter,
   experienceFilter,
-
 } from './filters';
 import { useSearchParams } from 'react-router-dom';
 import Paginator, {IPagination, PaginationLink} from '../../components/Paginator';
 import Table from '../../components/Table';
 import Grid from '../../components/Grid';
 import MultiSelect from '../../components/MultiSelect';
-
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import { useNavigate } from "react-router-dom";
+import useMousePosition from '../../hooks/useMousePosition';
 
 
-import { useNavigate } from "react-router-dom"
 
 interface SearchParam {
   [key: string]: string;
@@ -35,8 +34,8 @@ interface IFilter {
 const allFilters = [
   categoryFilter,
   equipmentFilter,
-  exerciseTypeFilter,
   experienceFilter,
+  exerciseTypeFilter,
 ]
 
 enum ViewMode {
@@ -51,6 +50,7 @@ function Exercises() {
   const [pagination, setPagination] = useState<IPagination>({links: []});
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID);
   const navigate = useNavigate();
+  useMousePosition();
 
   // get initial exercises right off the bat
   useEffect(() => {
@@ -130,11 +130,13 @@ function Exercises() {
         pr={1.2}
         height={{lg: 'calc(100vh - 50px)'}}
         sx={{'min-width': {sm: '100%', md: '210px'}}} className={styles.sidebar}>
-        {allFilters.map((filter, idx) => {
-          return (
-            <Filter key={idx} filter={filter} handleFilterChange={(filterKey, vals) => { handleFilterChange(filterKey, vals)}} val={searchParams.get(filter.key)?.split(',') || []}></Filter>
-          )
-        })}
+          <Box sx={{'max-height': 'calc(100vh - 125px)', overflow: 'auto'}}>
+            {allFilters.map((filter, idx) => {
+              return (
+                <Filter key={idx} filter={filter} handleFilterChange={(filterKey, vals) => { handleFilterChange(filterKey, vals)}} val={searchParams.get(filter.key)?.split(',') || []}></Filter>
+              )
+            })}
+          </Box>
         <Button color="secondary" sx={{'justify-self': 'center'}} size="small" variant="text" onClick={clearFilters}>Clear</Button>
         <Button size="large" variant="outlined" onClick={() => getExercises()}>Filter Items</Button>
       </Box>
