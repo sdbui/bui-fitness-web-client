@@ -4,6 +4,7 @@ import {
 
 import Home from './pages/Home/Home';
 import Exercises from './pages/Exercises/Exercises';
+import Workouts from './pages/Workouts/Workouts';
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
   {
     path: '/exercises',
     element: <Exercises/>
+  },
+  {
+    path: '/workouts',
+    element: <Workouts/>
   }
 ]);
 

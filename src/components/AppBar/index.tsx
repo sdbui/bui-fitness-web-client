@@ -16,9 +16,7 @@ export default function AppBar() {
       <Box component='nav' display="flex">
         <Link href="/" mr="10px">Home</Link>
         <Link href="/exercises" mr="10px">Exercises</Link>
-        <Link mr="10px" disabled component="button" onClick={()=> {
-          // href=/workouts
-        }}>Workouts</Link>
+        <Link mr="10px" href="/workouts">Workouts</Link>
       </Box>
       <Box
         display="flex"
