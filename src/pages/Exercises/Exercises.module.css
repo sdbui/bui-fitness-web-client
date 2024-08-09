@@ -1,13 +1,5 @@
-.exerciseList {
-  list-style-type: none;
-  display: grid;
-  padding: 10px;
-  grid-template-columns: 1fr 1fr 1fr;
-}
-
 .gridItem {
   overflow: hidden;
-  border: 1px solid black;
   width: 300px;
   background: rgb(30,30,30);
   cursor: pointer;
@@ -26,16 +18,22 @@
 .cardImage img {
   width: 100%;
   max-height: 150px;
-  /* background: radial-gradient(circle at center, #c3fffa 0, #3f827c 100%); */
   transition: all 0.3s ease;
   object-fit: cover;
 }
 
+.gridItem:hover {
+  box-shadow: 0px 0px 3px 3px rgb(63, 145, 161);
+}
 .gridItem:hover .cardImage img {
   transform-origin: center;
   transform: scale(1.05);
 }
-/* .cardImage img:hover {
-  transform-origin: center;
-  transform: scale(1.05);
-} */
+
+.sidebar {
+  overflow: auto;
+}
+
+.content {
+  overflow: auto;
+}

@@ -48,3 +48,21 @@ p, h1, h2, h3, h4, h5, h6 {
 
 /* END CSS RESET */
 
+
+
+/* CUSTOM SCROLLBAR */
+@supports (scrollbar-color: auto) {
+  * {
+    scrollbar-color: #444 transparent;
+    scrollbar-width: thin
+  }
+}
+
+/* *::-webkit-scrollbar {
+  background: transparent;
+  scrollbar-width: thin;
+}
+*::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 50px;
+} */

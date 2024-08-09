@@ -6,6 +6,8 @@ import styles from './index.module.css';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import Box from '@mui/material/Box';
+import { Typography } from '@mui/material';
 
 interface MultiSelectProps {
   name: string; // display name
@@ -34,36 +36,35 @@ export default function MultiSelect({name, filterkey, options, onSelectionChange
   }
 
   return (
-    <div>
+    <Box>
       <div className={styles.name} onClick={toggleVisibility}>
-        <h3>{name}</h3>
+        <Typography
+          color="primary"
+          variant="button" 
+          sx={{'font-size': '1em', cursor: 'pointer'}}>{name}</Typography>
         { visible ? <FontAwesomeIcon icon={faChevronDown} /> : <FontAwesomeIcon icon={faChevronUp} />}
       </div>
-      <FormGroup sx={{display: 'grid', 'grid-template-columns': '1fr 1fr 1fr'}} className={`${styles.list} ${visible ? '' : styles.collapsed}`}>
+      <FormGroup
+        sx={{pl: 1}}
+        className={`${styles.list} ${visible ? '' : styles.collapsed}`}>
         {options.map((option, idx) => {
           return (
-            <FormControlLabel control={
-              <Checkbox checked={val.includes(option)} onChange={handleChange} name={option}/>
-            } label={option}>
+            <FormControlLabel
+              label={
+                <Typography variant="body1" sx={{'text-transform': 'capitalize'}}>{option}</Typography>
+              }
+              control={
+                <Checkbox
+                  sx={{py: 0.6, 'min-width': '40px'}}
+                  size="small"
+                  checked={val.includes(option)} 
+                  onChange={handleChange} 
+                  name={option}/>
+              }>
             </FormControlLabel>
           );
         })}
       </FormGroup>
-      {/* <ul className={`${styles.list} ${visible ? '' : styles.collapsed}`}>
-        {options.map((option, idx) => {
-          return (
-            <li key={idx}>
-              <input type="checkbox" 
-                id={`${filterkey}-${idx}`} 
-                name={option} 
-                key={idx} 
-                onChange={handleChange}
-                checked={val.includes(option)}></input>
-              <label htmlFor={`${filterkey}-${idx}`}>{option}</label>
-            </li>
-          )
-        })}
-      </ul> */}
-    </div>
+    </Box>
   );
 }

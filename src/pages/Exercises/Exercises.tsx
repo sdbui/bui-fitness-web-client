@@ -16,6 +16,9 @@ import MultiSelect from '../../components/MultiSelect';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+
 
 import { useNavigate } from "react-router-dom"
 
@@ -117,32 +120,38 @@ function Exercises() {
   }
 
   return (
-    <>
-      <div>
-        <button onClick={clearFilters}>Clear all filters</button>
-
+    <Stack direction={{sm: 'column', md: 'row'}}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        gap={1}
+        pl={2}
+        py={2}
+        pr={1.2}
+        height={{lg: 'calc(100vh - 50px)'}}
+        sx={{'min-width': {sm: '100%', md: '210px'}}} className={styles.sidebar}>
         {allFilters.map((filter, idx) => {
           return (
             <Filter key={idx} filter={filter} handleFilterChange={(filterKey, vals) => { handleFilterChange(filterKey, vals)}} val={searchParams.get(filter.key)?.split(',') || []}></Filter>
           )
         })}
-      </div>
-
-      <button onClick={() => getExercises()}>go fetch</button>
-
-      <div>
-        <button onClick={() => setViewMode(ViewMode.GRID)}>GRID VIEW</button>
-        <button onClick={() => setViewMode(ViewMode.TABLE)}>TABLE VIEW</button>
+        <Button color="secondary" sx={{'justify-self': 'center'}} size="small" variant="text" onClick={clearFilters}>Clear</Button>
+        <Button size="large" variant="outlined" onClick={() => getExercises()}>Filter Items</Button>
+      </Box>
+      <Box className={styles.content}
+        display="flex"
+        flexDirection="column"
+        height={{lg: 'calc(100vh - 50px)'}}
+      >
         {
           viewMode === ViewMode.GRID ? 
             <Grid items={exercises} template={GridItemTemplate}/> :
             <Table items={exercises} cols={['name', ['category', 'target muscle'],'secondary_muscles', ['exercise_type', 'type'], ['equipment_required', 'equipment'], ['experience_level', 'experience'], 'url']}/>
         }
-      </div>
-
-      <Paginator links={pagination?.links as PaginationLink[]} clickFn={handlePaginatorClick} />
-
-    </>
+        <Paginator 
+          links={pagination?.links as PaginationLink[]} clickFn={handlePaginatorClick} />
+      </Box>
+    </Stack>
   )
 }
 
@@ -170,8 +179,8 @@ function GridItemTemplate (item: any) {
           <Typography variant='h6' align='center' sx={{'text-transform': 'capitalize', 'white-space': 'nowrap', overflow: 'hidden', 'text-overflow': 'ellipsis'}}>{item.name}</Typography>
         </Box>
         <div className={styles.primaryMuscles}>
-          <Typography variant="caption">Targeted Muscles</Typography>
-          <Box display="flex" gap={1}>
+          <Typography variant="caption">Target Muscles</Typography>
+          <Box display="flex" gap={1} sx={{'scrollbarWidth': 'none', width:'100%', overflow: 'scroll'}}>
             <Chip label={item['category']} size="small" color="info" sx={{'text-transform': 'capitalize'}}/>
             {item['secondary_muscles'].length === 0 ? '': (
               item['secondary_muscles'].map(({name}: {name: string}) => {
