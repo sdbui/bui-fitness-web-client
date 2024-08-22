@@ -1,5 +1,3 @@
-import styles from ',/index.module.css';
-
 type ColumnName = string | string[]; // if array => [datumKey, display]
 
 interface TableProps {
@@ -34,7 +32,7 @@ export default function ({items = [], cols = []}: TableProps) {
                 } else {
                   let str = '';
                   if (Array.isArray(item[colName])) {
-                    let names = item[colName].map(x => x.name );
+                    let names = item[colName].map((x:any) => x.name );
                     str = names.join(', ')
                   } else {
                     str = item[colName]

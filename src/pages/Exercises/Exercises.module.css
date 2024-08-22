@@ -4,6 +4,7 @@
   background: rgb(30,30,30);
   cursor: pointer;
   padding-bottom: 15px;
+  border-radius: 10px;
 
   background: radial-gradient(
     circle at calc(var(--x) * 1px) calc(var(--y) * 1px),

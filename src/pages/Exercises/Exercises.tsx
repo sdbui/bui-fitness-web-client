@@ -16,14 +16,13 @@ import Typography from '@mui/material/Typography';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import { useNavigate } from "react-router-dom";
 import useMousePosition from '../../hooks/useMousePosition';
 
 
 
-interface SearchParam {
-  [key: string]: string;
-}
+// interface SearchParam {
+//   [key: string]: string;
+// }
 
 interface IFilter {
   display: string;
@@ -48,8 +47,7 @@ function Exercises() {
   const [searchParams, setSearchParams] = useSearchParams(new URLSearchParams());
   const [exercises, setExercises] = useState([]);
   const [pagination, setPagination] = useState<IPagination>({links: []});
-  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.GRID);
-  const navigate = useNavigate();
+  const [viewMode] = useState<ViewMode>(ViewMode.GRID);
   useMousePosition();
 
   // get initial exercises right off the bat
@@ -133,7 +131,7 @@ function Exercises() {
           <Box sx={{'max-height': 'calc(100vh - 125px)', overflow: 'auto'}}>
             {allFilters.map((filter, idx) => {
               return (
-                <Filter key={idx} filter={filter} handleFilterChange={(filterKey, vals) => { handleFilterChange(filterKey, vals)}} val={searchParams.get(filter.key)?.split(',') || []}></Filter>
+                <Filter key={idx} filter={filter} handleFilterChange={(filterKey: any, vals: any) => { handleFilterChange(filterKey, vals)}} val={searchParams.get(filter.key)?.split(',') || []}></Filter>
               )
             })}
           </Box>
@@ -171,6 +169,10 @@ function GridItemTemplate (item: any) {
     advanced: 'error'
   };
 
+  type colortype = "success" | "warning" | "error";
+
+
+
   return (
     <div className={styles.gridItem} onClick={() => {openExercise(item.url)}}>
       <div className={styles.cardImage}>
@@ -201,7 +203,7 @@ function GridItemTemplate (item: any) {
         <div className={styles.difficulty}>
           <Typography variant="caption">Difficulty</Typography>
           <Box>
-            <Chip size="small" label={item['experience_level']} color={difficultyColorMap[item['experience_level']]} sx={{'text-transform': 'capitalize'}}/>
+            <Chip size="small" label={item['experience_level']} color={difficultyColorMap[item['experience_level'] as keyof typeof difficultyColorMap] as colortype} sx={{'text-transform': 'capitalize'}}/>
           </Box>
         </div>
       </Box>
@@ -210,7 +212,6 @@ function GridItemTemplate (item: any) {
 }
 
 function Filter ({filter, handleFilterChange, val}: {filter: IFilter, handleFilterChange: Function, val: string[]}) {
-  const [visible, setVisible] = useState(false);
 
   return (
     <MultiSelect name={filter.display} filterkey={filter.key}

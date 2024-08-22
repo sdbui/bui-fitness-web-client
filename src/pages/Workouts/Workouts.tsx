@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPerson, faPersonDigging } from '@fortawesome/free-solid-svg-icons';
+import { faPersonDigging } from '@fortawesome/free-solid-svg-icons';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 

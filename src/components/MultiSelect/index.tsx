@@ -1,4 +1,4 @@
-import { ChangeEvent, useState, useEffect } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 import styles from './index.module.css';
@@ -47,7 +47,7 @@ export default function MultiSelect({name, filterkey, options, onSelectionChange
       <FormGroup
         sx={{pl: 1}}
         className={`${styles.list} ${visible ? '' : styles.collapsed}`}>
-        {options.map((option, idx) => {
+        {options.map((option) => {
           return (
             <FormControlLabel
               label={
