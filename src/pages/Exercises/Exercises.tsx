@@ -60,7 +60,7 @@ function Exercises() {
    * @param page Optional page number to jump to. Used by pagination
    */
   const getExercises = async (page?: number) => {
-    let url = `http://${import.meta.env.VITE_API_HOST}:${import.meta.env.VITE_API_PORT}/exercises`;
+    let url = `https://${import.meta.env.VITE_API_HOST}/exercises`;
 
     let params = new URLSearchParams(searchParams);
     
